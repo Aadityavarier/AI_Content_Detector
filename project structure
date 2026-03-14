@@ -1,0 +1,47 @@
+ai-detector/
+├── frontend/                    # Next.js 14 app
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx             # Landing page
+│   │   ├── detect/
+│   │   │   └── page.tsx         # Detection tool
+│   │   └── dashboard/
+│   │       └── page.tsx         # Results dashboard
+│   ├── components/
+│   │   ├── HeroSection.tsx
+│   │   ├── UploadBox.tsx
+│   │   ├── ResultCard.tsx
+│   │   ├── ConfidenceMeter.tsx
+│   │   ├── AnimatedBackground.tsx
+│   │   ├── HowItWorks.tsx
+│   │   ├── StatsSection.tsx
+│   │   └── Navbar.tsx
+│   ├── lib/
+│   │   └── api.ts
+│   ├── tailwind.config.ts
+│   ├── next.config.js
+│   └── package.json
+│
+├── backend/                     # Python FastAPI
+│   ├── main.py
+│   ├── routes/
+│   │   ├── detect.py
+│   │   └── upload.py
+│   ├── ml/
+│   │   ├── text_detector.py
+│   │   ├── audio_detector.py
+│   │   └── video_detector.py
+│   ├── services/
+│   │   ├── inference_service.py
+│   │   └── preprocessing.py
+│   ├── database/
+│   │   ├── models.py
+│   │   └── connection.py
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── prisma/
+│   └── schema.prisma            # Database schema
+│
+├── docker-compose.yml           # Local dev setup
+└── README.md
