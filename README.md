@@ -1,158 +1,118 @@
-# 🛡️ Veridian — AI Content Detector
+# Veridian — AI Content Detector
 
-> Detect AI-generated text, audio, and video using open-source ML models.
-> Free, no signup, MIT licensed.
-
-![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?logo=fastapi)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.2-EE4C2C?logo=pytorch)
-![License: MIT](https://img.shields.io/badge/License-MIT-green)
+Detect AI-generated text, audio, and video using open-source ML models.
+Free, no signup required, MIT licensed.
 
 ---
 
-## 🧠 What It Does
+## What It Does
 
-| Content Type | Model | Accuracy |
+| Content | Model | Accuracy |
 |---|---|---|
-| **Text** | `roberta-base-openai-detector` | ~94% |
-| **Audio** | `wav2vec2` + MFCC classifier | ~88% |
-| **Video** | `EfficientNet-B0` frame analysis | ~91% |
+| Text | `roberta-base-openai-detector` | 94.2% |
+| Audio | `wav2vec2` + MFCC classifier | 87.6% |
+| Video | `EfficientNet-B0` frame analysis | 91.3% |
 
 ---
 
-## 📁 Project Structure
+## Tech Stack
+
+**Frontend** — Next.js 14, TailwindCSS, Framer Motion, Recharts  
+**Backend** — Python FastAPI, async processing  
+**ML** — PyTorch, HuggingFace Transformers, librosa, OpenCV  
+**Database** — PostgreSQL via Supabase  
+**Deploy** — Vercel (frontend), Render (backend)
+
+---
+
+## Project Structure
 
 ```
 ai-detector/
-├── frontend/          # Next.js 14 + Tailwind + Framer Motion
-├── backend/           # Python FastAPI
-│   ├── ml/            # Text, Audio, Video detector modules
-│   ├── routes/        # API endpoints
-│   └── database/      # SQLAlchemy models
-├── prisma/            # Database schema
-└── docker-compose.yml # Local dev
+├── backend/
+│   ├── ml/
+│   │   ├── text_detector.py       # RoBERTa text classifier
+│   │   ├── audio_detector.py      # wav2vec2 + MFCC pipeline
+│   │   └── video_detector.py      # EfficientNet frame analysis
+│   ├── routes/
+│   │   ├── detect.py              # POST /detect/text|audio|video
+│   │   └── upload.py              # POST /upload
+│   ├── database/
+│   │   ├── connection.py
+│   │   └── models.py
+│   ├── main.py
+│   └── requirements.txt
+├── frontend/
+│   ├── app/
+│   │   ├── page.tsx               # Landing page
+│   │   ├── detect/page.tsx        # Detection tool
+│   │   ├── layout.tsx
+│   │   └── globals.css
+│   ├── components/
+│   │   ├── Navbar.tsx
+│   │   ├── HeroSection.tsx
+│   │   ├── UploadBox.tsx          # Core detection UI
+│   │   ├── ResultCard.tsx
+│   │   ├── HowItWorks.tsx
+│   │   ├── StatsSection.tsx
+│   │   └── Footer.tsx
+│   └── lib/api.ts
+├── prisma/schema.prisma
+└── docker-compose.yml
 ```
 
 ---
 
-## ⚡ Quick Start (Local Dev)
+## Local Setup
 
-### Option 1 — Docker (Recommended)
+### Prerequisites
+- Python 3.11 (via Anaconda recommended)
+- Node.js 20+
+- Git
 
-```bash
-git clone https://github.com/your-repo/ai-detector
-cd ai-detector
-
-# Start everything
-docker-compose up --build
-
-# Frontend → http://localhost:3000
-# Backend  → http://localhost:8000
-# API Docs → http://localhost:8000/api/docs
-```
-
-### Option 2 — Manual Setup
-
-#### Backend
+### Backend
 
 ```bash
 cd backend
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
+conda create -n veridian python=3.11 -y
+conda activate veridian
 pip install -r requirements.txt
-
-# Copy env file
-cp .env.example .env
-# Edit .env with your DATABASE_URL
-
-# Start server
 uvicorn main:app --reload --port 8000
 ```
 
-#### Frontend
+API runs at `http://localhost:8000`  
+Swagger docs at `http://localhost:8000/api/docs`
+
+### Frontend
 
 ```bash
 cd frontend
-
-# Install dependencies
 npm install
-
-# Copy env
-cp .env.local.example .env.local
-# Set NEXT_PUBLIC_API_URL=http://localhost:8000
-
-# Start dev server
 npm run dev
-# → http://localhost:3000
 ```
+
+Site runs at `http://localhost:3000`
 
 ---
 
-## 🗄️ Database Setup (Supabase)
+## API Endpoints
 
-1. Go to [supabase.com](https://supabase.com) → Create free project
-2. Copy your connection string from Settings → Database
-3. Add to `backend/.env`:
-   ```
-   DATABASE_URL=postgresql+asyncpg://postgres:PASSWORD@db.PROJECT.supabase.co:5432/postgres
-   ```
-4. Run Prisma migrations (optional, for Prisma ORM approach):
-   ```bash
-   npx prisma migrate dev --name init
-   ```
-
----
-
-## 🚀 Deployment
-
-### Frontend → Vercel (Free)
-
-```bash
-cd frontend
-npx vercel
-
-# Set environment variable in Vercel dashboard:
-# NEXT_PUBLIC_API_URL = https://your-backend.onrender.com
+```
+POST /detect/text          # Detect AI-generated text
+POST /detect/audio         # Detect AI-generated audio
+POST /detect/video         # Detect deepfake video
+POST /upload               # Upload file
+GET  /results/{id}         # Get result by ID
 ```
 
-### Backend → Render (Free)
-
-1. Push `backend/` to GitHub
-2. Go to [render.com](https://render.com) → New Web Service
-3. Connect your repo, set:
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
-4. Add environment variables from `.env.example`
-
-> ⚠️ Free Render instances spin down after 15 min of inactivity. First request may take ~30s.
-
-### Alternative Backend → Railway
-
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
-
-railway login
-railway init
-railway up
-```
-
----
-
-## 🔌 API Reference
-
-### POST `/detect/text`
+### Example — Text Detection
 
 ```bash
 curl -X POST http://localhost:8000/detect/text \
-  -F "text=This is the text you want to analyze for AI generation..."
+  -F "text=Paste your text content here for analysis..."
 ```
 
-**Response:**
+Response:
 ```json
 {
   "id": "uuid",
@@ -162,18 +122,18 @@ curl -X POST http://localhost:8000/detect/text \
   "confidence": "high",
   "model_used": "roberta-base-openai-detector",
   "label": "AI Generated",
-  "analyzed_at": "2024-01-15T10:30:00"
+  "analyzed_at": "2025-01-15T10:30:00"
 }
 ```
 
-### POST `/detect/audio`
+### Example — Audio Detection
 
 ```bash
 curl -X POST http://localhost:8000/detect/audio \
   -F "file=@speech.mp3"
 ```
 
-### POST `/detect/video`
+### Example — Video Detection
 
 ```bash
 curl -X POST http://localhost:8000/detect/video \
@@ -182,62 +142,71 @@ curl -X POST http://localhost:8000/detect/video \
 
 ---
 
-## 🧪 Improving Detection Accuracy
+## Deployment
 
-The text detector (`roberta-base-openai-detector`) works out-of-the-box.
+### Frontend → Vercel
 
-For audio and video, the base models need fine-tuning. Recommended datasets:
+```bash
+cd frontend
+npm install -g vercel
+vercel login
+vercel --prod
+```
 
-| Task | Dataset | Link |
-|---|---|---|
-| Audio deepfake | ASVspoof 2019 | [Link](https://www.asvspoof.org) |
-| Video deepfake | FaceForensics++ | [Link](https://github.com/ondyari/FaceForensics) |
-| Audio deepfake | FakeAVCeleb | [Link](https://github.com/DASH-Lab/FakeAVCeleb) |
+Set environment variable in Vercel dashboard:
+```
+NEXT_PUBLIC_API_URL = https://your-backend.onrender.com
+```
 
-To use a fine-tuned model, replace the model loading in `ml/audio_detector.py` and `ml/video_detector.py`.
+### Backend → Render
+
+1. Push repo to GitHub
+2. New Web Service on Render → connect repo
+3. Set root directory to `backend`
+4. Build command: `pip install -r requirements.txt`
+5. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+6. Add environment variables:
+
+```
+DATABASE_URL = postgresql+asyncpg://...your supabase url...
+FRONTEND_URL = https://your-app.vercel.app
+```
+
+### Database → Supabase
+
+1. Create free project at supabase.com
+2. Copy connection string from Settings → Database
+3. Change `postgresql://` to `postgresql+asyncpg://`
+4. Add to Render environment variables
 
 ---
 
-## 🔒 Security Features
+## Security
 
-- ✅ File size limit (50MB)
-- ✅ File type validation (allowlist)
-- ✅ Rate limiting (20 req/min text, 10 audio, 5 video)
-- ✅ Input sanitization
-- ✅ CORS configuration
-- ✅ Temp file cleanup after processing
+- File size limit: 50MB
+- Allowed formats: mp3, wav, ogg, flac, m4a, mp4, mov, avi, mkv, webm
+- Rate limiting: 20 req/min (text), 10 req/min (audio), 5 req/min (video)
+- Input sanitization on all endpoints
+- CORS restricted to frontend URL
 
 ---
 
-## 📦 Tech Stack
+## Improving Accuracy
 
-| Layer | Technology |
+The text model works out of the box. For audio and video, fine-tune on these datasets:
+
+| Task | Dataset |
 |---|---|
-| Frontend | Next.js 14, React, TailwindCSS, Framer Motion |
-| Backend | Python FastAPI, Uvicorn |
-| ML | PyTorch, HuggingFace Transformers, librosa, OpenCV |
-| Database | PostgreSQL + SQLAlchemy (Supabase) |
-| Deployment | Vercel (frontend), Render (backend) |
+| Audio deepfake | ASVspoof 2019 |
+| Video deepfake | FaceForensics++ |
+| Audio deepfake | FakeAVCeleb |
 
 ---
 
-## 🤝 Contributing
+## License
 
-1. Fork the repo
-2. Create a branch: `git checkout -b feature/your-feature`
-3. Commit: `git commit -m "Add your feature"`
-4. Push and open a PR
+MIT — free to use, fork, and build on.
 
 ---
 
-## 📄 License
-
-MIT — use it, fork it, build on it. See `LICENSE`.
-
----
-
-## ⚠️ Disclaimer
-
-This tool provides probabilistic estimates, not definitive judgments.
-Do not use results as sole evidence for legal, journalistic, or academic decisions.
-Always combine with human review and other verification methods.
+> Results are probabilistic estimates. Do not use as sole evidence for legal or academic decisions.

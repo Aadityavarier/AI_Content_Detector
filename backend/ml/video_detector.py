@@ -14,8 +14,8 @@ from PIL import Image
 
 logger = logging.getLogger(__name__)
 
-FRAME_SAMPLE_RATE = 15   # Analyze 1 frame every N frames
-MAX_FRAMES = 30          # Cap for performance on free tier
+FRAME_SAMPLE_RATE = 60   # Analyze 1 frame every N frames
+MAX_FRAMES = 5          # Cap for performance on free tier
 IMG_SIZE = 224           # EfficientNet input size
 
 

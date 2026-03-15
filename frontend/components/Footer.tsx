@@ -43,7 +43,7 @@ export default function Footer() {
           © 2025 Veridian — MIT License
         </span>
         <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '10px', color: 'rgba(255,255,255,0.1)', letterSpacing: '1px' }}>
-          Student project · Not for legal use
+          Personal Project · Not for legal use
         </span>
       </div>
     </footer>
