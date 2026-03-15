@@ -40,7 +40,6 @@ export default function Navbar() {
       {/* Desktop links — hidden on mobile */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: '24px',
-        '@media (max-width: 640px)': { display: 'none' }
       }} className="desktop-nav">
         <Link href="/#how-it-works" style={{
           fontFamily: 'JetBrains Mono, monospace', fontSize: '10px',
