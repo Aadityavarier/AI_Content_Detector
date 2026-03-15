@@ -23,6 +23,9 @@ Free, no signup required, MIT licensed.
 **Database** — PostgreSQL via Supabase  
 **Deploy** — Vercel (frontend), Render (backend)
 
+## Live Sites
+Live Site: https://veridion-omega.vercel.app
+Backend API: https://veridian-backend-cglg.onrender.com/api/docs
 ---
 
 ## Project Structure
