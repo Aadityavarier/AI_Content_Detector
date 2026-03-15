@@ -33,9 +33,10 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
+      allow_origins=[
         "http://localhost:3000",
-        "https://your-frontend.vercel.app",  # Replace with your Vercel URL
+        "https://veridion-omega.vercel.app",
+        "https://veridion-omega.vercel.app/",
     ],
     allow_credentials=True,
     allow_methods=["*"],
